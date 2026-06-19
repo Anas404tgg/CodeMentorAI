@@ -1,8 +1,13 @@
 # Makefile for CodeMentor AI Backend (Phase 1)
-export TMP := /c/Users/HP/Desktop/tidada/tmp
-export TEMP := /c/Users/HP/Desktop/tidada/tmp
-export TMPDIR := /c/Users/HP/Desktop/tidada/tmp
-CC = /c/msys64/mingw64/bin/gcc
+# Auto-detect compiler
+ifeq ($(OS),Windows_NT)
+    CC = /c/msys64/mingw64/bin/gcc
+    export TMP := /c/Users/HP/Desktop/tidada/tmp
+    export TEMP := /c/Users/HP/Desktop/tidada/tmp
+    export TMPDIR := /c/Users/HP/Desktop/tidada/tmp
+else
+    CC = gcc
+endif
 CFLAGS = -std=c99 -Wall -Wextra -I src/backend
 LDFLAGS = -lmicrohttpd -lcurl -lsqlite3 -lcjson -lws2_32
 
