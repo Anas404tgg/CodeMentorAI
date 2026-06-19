@@ -1,0 +1,7 @@
+src/backend/main.c: In function 'load_env_file':
+src/backend/main.c:54:50: warning: 'snprintf' output may be truncated before the last format character [-Wformat-truncation=]
+   54 |         snprintf(env_var, sizeof(env_var), "%s=%s", key, value);
+      |                                                  ^
+src/backend/main.c:54:9: note: 'snprintf' output 2 or more bytes (assuming 257) into a destination of size 256
+   54 |         snprintf(env_var, sizeof(env_var), "%s=%s", key, value);
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

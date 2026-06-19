@@ -1,0 +1,1 @@
+- [Project summary and clarification](memory/2026-06-17-project-summary.md) — understood scope, asked about AI provider, sandbox strictness, and database tables

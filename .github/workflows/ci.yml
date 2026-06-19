@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libmicrohttpd-dev libcurl4-openssl-dev libsqlite3-dev libcjson-dev
+
+    - name: Build backend
+      run: make clean && make
+
+    - name: Lint C code (treat warnings as errors)
+      run: |
+        # We'll rebuild with -Werror to treat warnings as errors, but we don't want to break the build if there are warnings in dependencies?
+        # Instead, we can run the compiler with -Wall -Wextra -Werror on our source files only.
+        # Let's compile each .c file individually with -Werror and see if there are warnings.
+        find src/backend -name "*.c" -exec gcc -std=c99 -Wall -Wextra -Werror -I src/backend -c {} -o /dev/null \;
+
+    - name: Run unit tests for parser
+      run: |
+        gcc -std=c99 -Wall -Wextra -I src/backend tests/test_parser.c src/backend/parser.c -o tests/test_parser
+        ./tests/test_parser
+
+    - name: Start backend for integration tests
+      run: |
+        # Start the backend in the background
+        ./codementor &
+        BACKEND_PID=$!
+        # Wait for backend to start
+        sleep 3
+        # Store the PID for later
+        echo $BACKEND_PID > backend.pid
+
+    - name: Run integration tests
+      run: |
+        # Make the script executable
+        chmod +x tests/test_api.sh
+        # Run the tests
+        ./tests/test_api.sh
+
+    - name: Stop backend
+      if: always()
+      run: |
+        if [ -f backend.pid ]; then
+          kill $(cat backend.pid) || true
+          rm backend.pid
+        fi
+
+    # Optional: Deploy step (not implemented here, but you could add a step to push Docker image to a registry)
+    # For now, we just build and test.

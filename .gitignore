@@ -1,0 +1,49 @@
+# Node modules
+node_modules/
+
+# Frontend build outputs
+src/frontend/.next/
+src/frontend/out/
+src/frontend/build/
+
+# Build artifacts
+src/backend/*.o
+src/backend/*.exe
+codementor
+codementor.exe
+codementor.db
+
+# Environment variables
+.env
+
+# IDE files
+.vscode/
+.idea/
+
+# Logs
+*.log
+server.log
+
+# Test files
+tests/test_parser
+tests/test_parser.o
+tests/test_parser.exe
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Claude artifacts
+.claude/
+memory/
+
+# Temporary files
+tmp/
+*.temp
+*.bak
+
+# Documentation build
+docs/_build/
+
+# Frontend dependencies
+package-lock.json

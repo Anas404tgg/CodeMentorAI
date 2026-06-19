@@ -1,0 +1,25 @@
+Now let's make it run. Do the following steps in order, 
+wait for my confirmation between each step:
+
+Step 1 — Install backend dependencies and build the C backend:
+- Check if libmicrohttpd, libcurl, libsqlite3, libcjson are installed
+- If not, show me the exact apt install command
+- Then run: make
+- Show me the full output and fix any errors
+
+Step 2 — Test the backend is running:
+- Start the server: ./codementor_server
+- Test with: curl -X GET http://localhost:8080/api/history
+- Show me the response
+
+Step 3 — Install frontend dependencies:
+- cd src/frontend && npm install
+- Fix any dependency errors
+- Run: npm run dev
+- Confirm it opens on http://localhost:3000
+
+Step 4 — Test the full pipeline end to end:
+- Submit a buggy C file via curl to POST /api/analyze
+- Show me the full JSON response (parser metrics + sandbox output + AI feedback)
+
+Stop after each step and wait for my confirmation.

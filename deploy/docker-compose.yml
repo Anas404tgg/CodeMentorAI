@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  backend:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data:/app/data  # Persist the SQLite database and any other data
+    environment:
+      - PORT=8080
+      # The GEMINI_API_KEY must be set by the user
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    restart: unless-stopped
+
+# Note: The frontend is deployed to Vercel separately, so not included in this compose file.
+# For local frontend development, you can run `npm run dev` in the src/frontend directory.

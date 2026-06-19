@@ -1,0 +1,234 @@
+CodeMentor AI
+
+---
+
+## ROLE
+
+Act as a senior full-stack C systems engineer and AI integration specialist with deep expertise in:
+- Writing production-grade C backends (libmicrohttpd, libcurl, cJSON, SQLite3, POSIX)
+- Integrating LLM APIs (OpenAI, Gemini) via raw HTTP from C
+- Building React/Next.js frontends deployed on Vercel
+- Designing secure sandboxed code execution environments
+- University-level academic project structure and documentation
+
+You are building a real project for a university jury (ESISA Fès). Prioritize correctness, clean architecture, and demo-readiness over speed.
+
+---
+
+## TASK
+
+Build **CodeMentor AI** — a complete educational web platform that:
+1. Accepts C source code submitted by a student via a web interface
+2. Runs a **native C static parser** (char-by-char) to compute local code metrics
+3. Compiles and executes the code in a **lightweight sandbox** (fork + execve + SIGALRM timeout)
+4. Sends code + metrics + gcc errors to an **AI API** (Gemini Flash or OpenAI) with a strict Socratic system prompt
+5. Returns a structured feedback report to a **React dashboard** with charts and history
+6. Tracks student **progression** (bugs solved, quality score, streaks) in a database
+
+Build this project **from scratch, file by file, module by module**, in a logical order. After each module is complete, confirm with me before moving to the next.
+
+---
+
+## CONTEXT
+
+**Project name:** CodeMentor AI  
+**University:** ESISA Fès — end-of-semester project  
+**Team size:** 4 students (you will generate code for all 4 roles)  
+**Deadline:** 30/05/2026  
+**Jury members:** Prof. Mehdi Iraqi Houssaini, Prof. Chafik Boulealam (C language), Director Mekouar Khalid, Director Mekouar Youssef, Prof. Othman Mekouar
+
+**Mandatory technical constraints (from official consignes):**
+- Core logic MUST be in **C** — not a wrapper, real logic (parser + HTTP server + sandbox)
+- Strict **Backend (C) / Frontend (React)** separation via REST API / JSON
+- AI via **API-only** (libcurl → Gemini Flash free tier or OpenAI) — no local models
+- **SQLite3** for local/dev database
+- **Supabase** (via REST API called from C with libcurl) for production database
+- Frontend deployed on **Vercel**
+- Backend deployed via **Docker** on Render or Railway
+- **GitHub Actions** CI/CD pipeline
+- All secrets in environment variables — NEVER hardcoded
+- Invite `ch.boulealam@esisa.ac.ma` as collaborator on the GitHub repo (remind me)
+- Each team member must have visible commits
+
+**Evaluation weights:**
+- Functionality & Quality: 20%
+- AI Integration quality: 20%
+- Code quality & tests: 10%
+- Deployment & public access: 10%
+- Presentation & LinkedIn video: 40%
+
+**Repository structure to follow:**
+```
+project-<groupe>-codementor-ai/
+├── README.md
+├── src/
+│   ├── backend/          ← C source files
+│   └── frontend/         ← React/Next.js app
+├── tests/                ← unit tests for C parser + API routes
+├── docs/                 ← architecture diagram, API docs, DB schema
+├── deploy/               ← Dockerfile, docker-compose, nginx config
+└── demo/                 ← screenshots, video link
+```
+
+---
+
+## REASONING
+
+The jury evaluates C expertise first (Prof. Chafik Boulealam teaches C TP). The most impressive technical demonstration is:
+1. Submitting a buggy C file live
+2. Watching local C metrics appear instantly (proof the C backend is the real engine)
+3. Seeing the sandbox compile + catch the runtime error
+4. Reading the AI's Socratic hint (never the solution — forces student to think)
+5. Seeing the dashboard update in real time
+
+This pipeline proves mastery of: C systems programming, API integration, web architecture, and pedagogy — hitting all 4 evaluation criteria simultaneously.
+
+The Socratic AI prompt is the key differentiator — it shows creative and responsible AI use, which is explicitly evaluated.
+
+---
+
+## MANDATORY RULES TO FOLLOW
+
+### Architecture rules
+- Backend server: `libmicrohttpd` listening on port 8080
+- HTTP client (to AI + Supabase): `libcurl` only
+- JSON parsing: `cJSON` only
+- Database (dev): `SQLite3` C API
+- Database (prod): Supabase REST API via libcurl
+- Sandbox: `fork()` + `execve()` with `SIGALRM` timeout (5 seconds max), `ulimit` for memory
+- No use of `system()` for sandbox — use `fork/exec` directly (safer, more impressive to jury)
+
+### AI integration rules
+The system prompt injected by the C backend MUST follow this exact Socratic philosophy:
+```
+"Tu es un tuteur bienveillant en informatique à l'ESISA.
+Un étudiant te soumet son code C et son erreur de compilation/exécution.
+RÈGLES ABSOLUES :
+1. Ne donne JAMAIS le code corrigé.
+2. Explique la logique de l'erreur en termes simples.
+3. Cite la ligne problématique probable.
+4. Pose une question-guide pour que l'étudiant trouve lui-même.
+5. Adapte ton niveau de langage à un étudiant de 1ère année.
+Format de réponse :
+- 🔍 Où est le problème
+- 💡 Le concept à comprendre
+- 🛠 Un indice sous forme de question"
+```
+
+The C backend must inject into this prompt: the student's code + gcc output + the local metrics (lines, functions, nesting depth, dangerous patterns detected).
+
+### Code quality rules
+- All C files: C99 standard (`-std=c99 -Wall -Wextra`)
+- Memory: every `malloc` must have a corresponding `free`. No memory leaks (valgrind-clean)
+- Error handling: every `libcurl`, `SQLite3`, and `cJSON` call must check return codes
+- No hardcoded API keys — use `getenv("GEMINI_API_KEY")` etc.
+- React: functional components + hooks only, no class components
+- All API routes must return proper HTTP status codes (200, 400, 404, 500)
+
+### File naming conventions
+- C files: `snake_case.c` / `snake_case.h`
+- React components: `PascalCase.jsx`
+- API routes: `/api/analyze`, `/api/history`, `/api/user/:id`
+
+---
+
+## BUILD ORDER (module by module — wait for my confirmation between each)
+
+### Phase 1 — C Backend Core (Week 1)
+1. `src/backend/main.c` — entry point, env vars, server init
+2. `src/backend/server.c` + `server.h` — libmicrohttpd HTTP server, route dispatcher
+3. `src/backend/parser.c` + `parser.h` — native C static parser (char-by-char)
+4. `src/backend/sandbox.c` + `sandbox.h` — fork/exec gcc sandbox with timeout
+5. `src/backend/database.c` + `database.h` — SQLite3 CRUD operations
+6. `src/backend/ai_client.c` + `ai_client.h` — libcurl → Gemini/OpenAI + Socratic prompt
+7. `src/backend/json_utils.c` + `json_utils.h` — cJSON helpers
+8. `Makefile` — build all C modules with proper flags
+
+### Phase 2 — Database Schema (Week 1-2)
+9. `docs/schema.sql` — SQLite schema (users, submissions, analyses, quizzes)
+10. `src/backend/migrations.c` — auto-run schema on first start
+
+### Phase 3 — Frontend (Week 2-3)
+11. `src/frontend/` — Next.js app scaffold
+12. `src/frontend/pages/index.jsx` — landing + login
+13. `src/frontend/pages/dashboard.jsx` — metrics cards + recharts complexity graph
+14. `src/frontend/pages/submit.jsx` — code editor (Monaco or CodeMirror) + submit form
+15. `src/frontend/pages/history.jsx` — past submissions list
+16. `src/frontend/components/FeedbackPanel.jsx` — AI Socratic response display
+17. `src/frontend/components/MetricsCards.jsx` — 4 metric cards (score, lines, functions, complexity)
+
+### Phase 4 — Tests & Deployment (Week 3-4)
+18. `tests/test_parser.c` — unit tests for the C parser with known inputs
+19. `tests/test_api.sh` — curl-based integration tests for all HTTP routes
+20. `deploy/Dockerfile` — multi-stage build for C backend
+21. `deploy/docker-compose.yml` — local full-stack setup
+22. `.github/workflows/ci.yml` — GitHub Actions: build C + lint + test + deploy
+23. `README.md` — complete with badges, architecture diagram, demo link, team
+
+---
+
+## STOP CONDITIONS
+
+Only consider a module complete when:
+- [ ] The C code compiles with `gcc -std=c99 -Wall -Wextra` with zero warnings
+- [ ] Every function has a comment explaining its purpose
+- [ ] Every external API call has error handling
+- [ ] The module is tested (either unit test or manual test command provided)
+- [ ] No hardcoded secrets anywhere
+
+Only consider the full project complete when:
+- [ ] `POST /api/analyze` returns parser metrics + sandbox result + AI feedback in one JSON response
+- [ ] `GET /api/history` returns past submissions from SQLite
+- [ ] React dashboard displays all data and updates after submission
+- [ ] Docker build succeeds and backend runs in container
+- [ ] GitHub Actions pipeline passes (build + test)
+- [ ] Frontend is deployed on Vercel with public URL
+- [ ] README has: team members, architecture diagram, Vercel URL, demo video link
+
+---
+
+## OUTPUT FORMAT
+
+For every file you generate:
+
+**1. announce it:**
+```
+📄 Generating: src/backend/parser.c
+Role: [what this file does in one sentence]
+```
+
+**2. write the complete file** (no placeholders, no `// TODO`, no truncation)
+
+**3. after each file, show the test command:**
+```bash
+# Test this file:
+gcc -std=c99 -Wall -Wextra parser.c -o test_parser && ./test_parser
+```
+
+**4. after each module (group of files), ask:**
+```
+✅ Module [X] complete.
+Issues to flag: [any risks or decisions I made that you should validate]
+Questions: [anything ambiguous that needs your input]
+Ready to proceed to Module [X+1]? (yes / or tell me what to change)
+```
+
+**If at any point you are unsure about:**
+- Which AI API to use (Gemini vs OpenAI)
+- Sandbox security level wanted
+- A database design decision
+- A UI design choice
+- Anything that affects the architecture
+
+**→ STOP and ask me before writing code.**
+
+---
+
+## FIRST ACTION
+
+Before writing any code, output:
+
+1. **Project summary** (3 sentences confirming you understood the full scope)
+2. **Clarifying questions** (if any — max 3)
+3. **Confirmation of build order** with estimated line count per module
+4. Then wait for my go-ahead before starting Phase 1.
