@@ -6,6 +6,10 @@
  * and runs the main event loop.
  */
 
+#ifndef _WIN32
+#define _GNU_SOURCE
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
