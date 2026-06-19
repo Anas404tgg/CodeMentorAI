@@ -56,7 +56,11 @@ static void load_env_file(const char *filename) {
         char env_var[512]; // Increased buffer size to prevent truncation
         int len = snprintf(env_var, sizeof(env_var), "%s=%s", key, value);
         if (len >= 0 && len < (int)sizeof(env_var)) {
-            _putenv(env_var);
+            #ifdef _WIN32
+	_putenv(env_var);
+#else
+	putenv(env_var);
+#endif
         }
         /* If truncation would occur, skip this environment variable */
     }

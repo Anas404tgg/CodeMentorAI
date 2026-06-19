@@ -15,6 +15,7 @@
 #include "sandbox.h"      // To be implemented in module 4
 #include "database.h"     // To be implemented in module 5
 #include "ai_client.h"    // To be implemented in module 6
+#include <limits.h>
 
 #define JSON_CONTENT_TYPE "application/json"
 
