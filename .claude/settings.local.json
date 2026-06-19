@@ -55,7 +55,21 @@
       "Bash(kill 2753 *)",
       "Bash(kill 2790 *)",
       "Bash(git init *)",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git config *)",
+      "Bash(git remote *)",
+      "Bash(git push *)",
+      "Bash(git rm *)",
+      "Bash(npx vercel *)",
+      "Bash(vercel login *)",
+      "Bash(vercel *)",
+      "Bash(npx tailwindcss *)",
+      "Bash(npx *)",
+      "Bash(node_modules/.bin/tailwindcss *)",
+      "Bash(C-c *)",
+      "Bash(node *)",
+      "Bash(TIMEOUT=5 node *)"
     ]
   }
 }

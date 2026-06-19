@@ -55,14 +55,14 @@ export default function History() {
   }
 
   return (
-    <div className="container">
+    <div className="container mx-auto px-4 py-8">
       <Head>
         <title>History - CodeMentor AI</title>
       </Head>
       <main>
-        <h1 className="mb-4">Submission History</h1>
+        <h1 className="mb-6 text-3xl font-bold text-gray-800">Submission History</h1>
         {history.length === 0 ? (
-          <p>No submissions yet.</p>
+          <p className="text-center py-8">No submissions yet.</p>
         ) : (
           <table className="min-w-full bg-white border border-gray-200">
             <thead>

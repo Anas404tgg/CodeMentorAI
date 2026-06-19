@@ -34,7 +34,6 @@ tests/test_parser.exe
 Thumbs.db
 
 # Claude artifacts
-.claude/
 memory/
 
 # Temporary files
@@ -47,3 +46,4 @@ docs/_build/
 
 # Frontend dependencies
 package-lock.json
+api.txt

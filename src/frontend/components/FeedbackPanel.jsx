@@ -1,6 +1,6 @@
 export default function FeedbackPanel({ feedback }) {
   if (!feedback) {
-    return <div className="p-3 bg-gray-50">No feedback available.</div>;
+    return <div className="p-3 bg-gray-50 text-center">No feedback available.</div>;
   }
 
   // Split the feedback into lines (assuming it's formatted with newlines)

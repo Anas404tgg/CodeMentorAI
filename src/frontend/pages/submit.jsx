@@ -5,7 +5,7 @@ import MonacoEditor from '@monaco-editor/react';
 import FeedbackPanel from '../components/FeedbackPanel';
 
 export default function SubmitCode() {
-  const [code, setCode] = useState('#include <stdio.h>\n\nint main() {\n    printf("Hello, World!\\n");\n    return 0;\n}');
+  const [code, setCode] = useState('#include <stdio.h>\n\nint main() {\n    printf("Hello, World!\n");\n    return 0;\n}');
   const [language, setLanguage] = useState('c');
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -49,69 +49,109 @@ export default function SubmitCode() {
   };
 
   return (
-    <div className="container">
+    <div className="container mx-auto px-4 py-8">
       <Head>
         <title>Submit Code - CodeMentor AI</title>
       </Head>
       <main>
-        <h1 className="mb-4">Submit Your C Code</h1>
-        <form onSubmit={handleSubmit} className="mb-6">
-          <div className="mb-4">
-            <label htmlFor="codeEditor" className="mb-1 block">
+        <h1 className="mb-6 text-3xl font-bold text-gray-800">Submit Your C Code</h1>
+        <form onSubmit={handleSubmit} className="mb-8 space-y-6">
+          <div className="space-y-2">
+            <label htmlFor="codeEditor" className="block text-gray-700 font-medium mb-2">
               C Code
             </label>
-            <MonacoEditor
-              height="400px"
-              defaultLanguage="c"
-              value={code}
-              onChange={(newCode) => {
-                setCode(newCode);
-              }}
-              // Additional props to make it fit the container
-              options={{
-                theme: 'vs-dark',
-                automaticLayout: true,
-              }}
-            />
+            <div className="relative">
+              <div className="absolute inset-0 pointer-events-none">
+                <div className="pointer-events-none absolute inset-0">
+                  <MonacoEditor
+                    height="400px"
+                    defaultLanguage="c"
+                    value={code}
+                    onChange={(newCode) => {
+                      setCode(newCode);
+                    }}
+                    // Additional props to make it fit the container
+                    options={{
+                      theme: 'vs-dark',
+                      automaticLayout: true,
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
           </div>
           <button
             type="submit"
             disabled={loading}
-            className={`btn w-full ${loading ? 'opacity-50' : ''}`}
+            className={`w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-all duration-200 transform hover:-translate-y-1 hover:scale-105 ${loading ? 'opacity-50' : ''}`}
           >
             {loading ? 'Analyzing...' : 'Analyze Code'}
           </button>
         </form>
 
-        {error && <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600">{error}</div>}
+        {error && (
+          <div className="mt-4 p-4 bg-red-50 border-l-4 border-red-500 text-red-600 rounded-lg">
+            {error}
+          </div>
+        )}
 
         {result && (
-          <div className="card">
-            <h2 className="mb-2">Analysis Results</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <h3 className="font-semibold mb-1">Metrics</h3>
-                <p>Lines: {result.metrics.lines}</p>
-                <p>Functions: {result.metrics.functions}</p>
-                <p>Max Nesting Depth: {result.metrics.max_nesting_depth}</p>
-                <p>Dangerous Patterns: {result.metrics.dangerous_patterns}</p>
+          <div className="bg-white rounded-xl shadow-md overflow-hidden">
+            <div className="px-6 py-4 border-b border-gray-200">
+              <h2 className="text-xl font-semibold text-gray-800 mb-4">Analysis Results</h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
+              <div className="space-y-4">
+                <h3 className="font-semibold mb-2 text-gray-800">Metrics</h3>
+                <div className="space-y-2">
+                  <p className="flex justify-between">
+                    <span className="text-gray-600">Lines:</span>
+                    <span className="font-medium">{result.metrics.lines}</span>
+                  </p>
+                  <p className="flex justify-between">
+                    <span className="text-gray-600">Functions:</span>
+                    <span className="font-medium">{result.metrics.functions}</span>
+                  </p>
+                  <p className="flex justify-between">
+                    <span className="text-gray-600">Max Nesting Depth:</span>
+                    <span className="font-medium">{result.metrics.max_nesting_depth}</span>
+                  </p>
+                  <p className="flex justify-between">
+                    <span className="text-gray-600">Dangerous Patterns:</span>
+                    <span className="font-medium">{result.metrics.dangerous_patterns}</span>
+                  </p>
+                </div>
               </div>
-              <div>
-                <h3 className="font-semibold mb-1">Sandbox Result</h3>
-                <p>Exit Code: {result.sandbox_result.exit_code}</p>
-                <p>Timed Out: {result.sandbox_result.timed_out ? 'Yes' : 'No'}</p>
-                <p>Stdout: {result.sandbox_result.stdout}</p>
-                <p>Stderr: {result.sandbox_result.stderr}</p>
+              <div className="space-y-4">
+                <h3 className="font-semibold mb-2 text-gray-800">Sandbox Result</h3>
+                <div className="space-y-2">
+                  <p className="flex justify-between">
+                    <span className="text-gray-600">Exit Code:</span>
+                    <span className="font-medium">{result.sandbox_result.exit_code}</span>
+                  </p>
+                  <p className="flex justify-between">
+                    <span className="text-gray-600">Timed Out:</span>
+                    <span className="font-medium">{result.sandbox_result.timed_out ? 'Yes' : 'No'}</span>
+                  </p>
+                  <p className="flex justify-between">
+                    <span className="text-gray-600">Stdout:</span>
+                    <span className="font-medium ml-2 max-w-xs break-all">{result.sandbox_result.stdout}</span>
+                  </p>
+                  <p className="flex justify-between">
+                    <span className="text-gray-600">Stderr:</span>
+                    <span className="font-medium ml-2 max-w-xs break-all">{result.sandbox_result.stderr}</span>
+                  </p>
+                </div>
               </div>
             </div>
-            <div className="mt-4">
-              <h3 className="font-semibold mb-1">AI Feedback</h3>
+            <div className="px-6 pt-4 pb-6">
+              <h3 className="font-semibold mb-2 text-gray-800">AI Feedback</h3>
               <FeedbackPanel feedback={result.ai_feedback} />
             </div>
-            <div className="mt-4">
+            <div className="px-6 py-4">
               <button
                 onClick={() => router.push('/dashboard')}
-                className="btn"
+                className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-all duration-200 transform hover:-translate-y-1 hover:scale-105"
               >
                 Go to Dashboard
               </button>

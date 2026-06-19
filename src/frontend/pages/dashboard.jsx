@@ -108,9 +108,9 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="container">
-      <h1 className="mb-4">Dashboard</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="mb-6 text-3xl font-bold text-gray-800">Dashboard</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
         <MetricsCards title="Lines of Code" value={metrics.lines} />
         <MetricsCards title="Functions" value={metrics.functions} />
         <MetricsCards title="Max Nesting Depth" value={metrics.maxNestingDepth} />
@@ -119,26 +119,34 @@ export default function Dashboard() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="col-span-1 lg:col-span-2">
-          <div className="card">
-            <h2 className="mb-2">Complexity Over Time</h2>
-            <div className="h-64 w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={complexityData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="date" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Line type="monotone" dataKey="value" stroke="#8884d8" activeDot={{ r: 8 }} />
-                </LineChart>
-              </ResponsiveContainer>
+          <div className="bg-white rounded-xl shadow-md overflow-hidden">
+            <div className="px-6 py-4 border-b border-gray-200">
+              <h2 className="text-xl font-semibold text-gray-800">Complexity Over Time</h2>
+            </div>
+            <div className="p-6">
+              <div className="h-64 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={complexityData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="date" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Line type="monotone" dataKey="value" stroke="#8884d8" activeDot={{ r: 8 }} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
             </div>
           </div>
         </div>
         <div className="col-span-1 lg:col-span-1">
-          <div className="card">
-            <h2 className="mb-2">AI Feedback</h2>
-            <FeedbackPanel feedback={feedback} />
+          <div className="bg-white rounded-xl shadow-md overflow-hidden">
+            <div className="px-6 py-4 border-b border-gray-200">
+              <h2 className="text-xl font-semibold text-gray-800">AI Feedback</h2>
+            </div>
+            <div className="p-6">
+              <FeedbackPanel feedback={feedback} />
+            </div>
           </div>
         </div>
       </div>
