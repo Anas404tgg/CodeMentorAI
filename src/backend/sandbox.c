@@ -17,6 +17,7 @@
 /* POSIX-specific headers */
 #include <signal.h>
 #include <unistd.h>
+#include <string.h>
 #include <sys/types.h>
 #include <sys/resource.h>
 #include <sys/wait.h>
