@@ -17,6 +17,10 @@
 /* POSIX-specific headers */
 #include <signal.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/resource.h>
+#include <sys/wait.h>
+#include <errno.h>
 #endif
 
 /**
