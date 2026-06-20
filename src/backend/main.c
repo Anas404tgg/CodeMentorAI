@@ -6,14 +6,14 @@
  * and runs the main event loop.
  */
 
-#ifndef _WIN32
-#define _GNU_SOURCE
-#endif
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <microhttpd.h>
+
+#ifndef _WIN32
+extern int putenv(char *string);
+#endif
 #ifdef _WIN32
 #include <windows.h>
 #endif
