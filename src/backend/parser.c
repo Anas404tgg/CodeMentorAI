@@ -42,8 +42,53 @@ int parse_c_code(const char *code, Metrics *metrics) {
     size_t i = 0;
     size_t len = strlen(code);
 
+    // Context tracking for ignoring dangerous patterns in strings/comments
+    int in_string = 0;            // Are we inside a string literal?
+    char string_delimiter = 0;    // What started the string: '"' or '''
+    int in_block_comment = 0;     // Are we inside a /* ... */ comment?
+    int in_line_comment = 0;      // Are we inside a // ... \n comment?
+
     while (i < len) {
         char ch = code[i];
+
+        // Handle string literals
+        if (!in_block_comment && !in_line_comment) {
+            if ((ch == '"' || ch == '\'') && (i == 0 || code[i-1] != '\\')) {
+                if (!in_string) {
+                    // Starting a string literal
+                    in_string = 1;
+                    string_delimiter = ch;
+                } else if (ch == string_delimiter) {
+                    // Ending a string literal
+                    in_string = 0;
+                    string_delimiter = 0;
+                }
+            }
+        }
+
+        // Handle block comments
+        if (!in_string && !in_line_comment) {
+            if (match_substr(code, i, "/*")) {
+                in_block_comment = 1;
+                i++; // Skip the '*'
+            } else if (match_substr(code, i, "*/") && in_block_comment) {
+                in_block_comment = 0;
+                i++; // Skip the '/'
+            }
+        }
+
+        // Handle line comments
+        if (!in_string && !in_block_comment) {
+            if (match_substr(code, i, "//")) {
+                in_line_comment = 1;
+                i++; // Skip the second '/'
+            }
+        }
+
+        // End line comment at newline
+        if (ch == '\n' && in_line_comment) {
+            in_line_comment = 0;
+        }
 
         // Count lines
         if (ch == '\n') {
@@ -67,23 +112,25 @@ int parse_c_code(const char *code, Metrics *metrics) {
             }
         }
 
-        // Detect dangerous patterns (function calls)
-        // We'll check for common unsafe functions
-        if (match_substr(code, i, "gets(")) {
-            metrics->dangerous_patterns++;
-            i += strlen("gets(") - 1; // skip ahead to avoid multiple counts
-        } else if (match_substr(code, i, "strcpy(")) {
-            metrics->dangerous_patterns++;
-            i += strlen("strcpy(") - 1;
-        } else if (match_substr(code, i, "strcat(")) {
-            metrics->dangerous_patterns++;
-            i += strlen("strcat(") - 1;
-        } else if (match_substr(code, i, "sprintf(")) {
-            metrics->dangerous_patterns++;
-            i += strlen("sprintf(") - 1;
-        } else if (match_substr(code, i, "vsprintf(")) {
-            metrics->dangerous_patterns++;
-            i += strlen("vsprintf(") - 1;
+        // Detect dangerous patterns (function calls) - ONLY when not in string/comment
+        if (!in_string && !in_block_comment && !in_line_comment) {
+            // We'll check for common unsafe functions
+            if (match_substr(code, i, "gets(")) {
+                metrics->dangerous_patterns++;
+                i += strlen("gets(") - 1; // skip ahead to avoid multiple counts
+            } else if (match_substr(code, i, "strcpy(")) {
+                metrics->dangerous_patterns++;
+                i += strlen("strcpy(") - 1;
+            } else if (match_substr(code, i, "strcat(")) {
+                metrics->dangerous_patterns++;
+                i += strlen("strcat(") - 1;
+            } else if (match_substr(code, i, "sprintf(")) {
+                metrics->dangerous_patterns++;
+                i += strlen("sprintf(") - 1;
+            } else if (match_substr(code, i, "vsprintf(")) {
+                metrics->dangerous_patterns++;
+                i += strlen("vsprintf(") - 1;
+            }
         }
 
         i++;

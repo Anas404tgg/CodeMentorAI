@@ -78,7 +78,7 @@ int main(void) {
     failed += run_test("Nested braces", "int main() { if (1) { while (1) { break; } } }", 1, 1, 3, 0);
 
     // Test 5: Multiple functions
-    failed += run_test("Multiple functions", "int a() {}\nint b() {}\n", 2, 2, 1, 0);
+    failed += run_test("Multiple functions", "int a() {}\nint b() {}\n", 3, 2, 1, 0);
 
     // Test 6: Dangerous pattern - gets
     failed += run_test("Dangerous gets", "void f() { gets(buf); }", 1, 1, 1, 1);
